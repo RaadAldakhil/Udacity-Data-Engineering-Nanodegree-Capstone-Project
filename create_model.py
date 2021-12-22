@@ -13,8 +13,8 @@ def write_temperature_data(cleaned_temperature_df):
     Write temperature data to parquet
     """
     temperature_table = cleaned_temperature_df.select(["dt" ,"AverageTemperature" ,"AverageTemperatureUncertainty" ,"City" \
-                                                       ,"Country" ,"Latitude" ,"Longitude"])
-    temperature_table.write.mode("append").partitionBy("Country").parquet("./output/temperature_table.parquet")
+                                                       ,"Country" ,"Latitude" ,"Longitude","i94port"])
+    temperature_table.write.mode("append").partitionBy("i94port").parquet("./output/temperature_table.parquet")
     
 def write_demographics_data(fixed_cleaned_demographics_df):
     """
@@ -23,8 +23,8 @@ def write_demographics_data(fixed_cleaned_demographics_df):
     demographics_table = fixed_cleaned_demographics_df.select(["City" ,"State" ,"median_age" ,"male_population" \
                                                                ,"female_population" ,"total_population" \
                                                                ,"number_of_veterans" ,"foreign_born" \
-                                                               ,"average_household_size" ,"state_code" ,"Race" ,"Count"])
-    demographics_table.write.mode("append").partitionBy("state_code").parquet("./output/demographics_table.parquet")
+                                                               ,"average_household_size" ,"state_code" ,"Race" ,"Count","i94port"])
+    demographics_table.write.mode("append").partitionBy("i94port").parquet("./output/demographics_table.parquet")
     
 def write_airport_code_data(cleaned_airport_code_df):
     """

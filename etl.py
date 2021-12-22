@@ -1,6 +1,5 @@
 import pandas as pd
 from pyspark.sql.functions import udf
-from time import time
 
 def create_valid_ports():
     """
@@ -63,17 +62,9 @@ def add_port(df):
     """
     Add valid ports to table to allow joining of tables
     """
-    t0 = time()
-    print("Add port")
-    new_df = df.withColumn("i94port", get_port(df.City))
-    print("complete adding " + str(time() - t0))
-    t0 = time()
-    new_df.show()
-    print("start filter " + str(time() - t0))
-    t0 = time()
-    new_df = new_df.filter(new_df.i94port != 'null')
-    print("finish filter " + str(time() - t0))
-    new_df.show()
+    port_location_df = create_valid_ports()
+    df = df.withColumn("i94port", get_port(df.City))
+    new_df = df.filter(df.i94port != 'null')
     return new_df
 
     
@@ -81,16 +72,7 @@ def clean_table(df):
     """
     Drop empty rows in dataframe
     """
-    t0 = time()
-    print("start cleaning " + str(time() - t0))
-    t0 = time()
     print(f"number of rows in table before removing empty rows: {df.count()}")    
     clean_df = df.dropna()
     print(f"number of rows in table after removing empty rows: {clean_df.count()}")
-    print("finish cleaning " + str(time() - t0))
-    t0 = time()
-    print("show")
-    clean_df.show(n=5)
-    print(time() - t0)
-    
     return clean_df

@@ -1,5 +1,5 @@
 # Capstone Project
-This porject aims to study which US cities are most popular for immigration. Providing data on demographics on the arrivals, such as gender, visa types, median ages, etc. As well as providing data on the climates of different cities to study any corelation between temperature and rate of immigrations. And airport data to identify trends in which airlines are most used and departure destinations.Spark was used for the ETL pipeline and data stored in parquet for analysis.
+This porject aims to study which US cities are most popular for immigration. Providing data on demographics on the arrivals, such as gender, visa types, median ages, etc. As well as providing data on the climates of different cities to study any corelation between temperature and rate of immigrations. And airport data to identify trends in which airlines are most used and departure destinations.As the most recent immigration data is from 2016 while temperature stops at 2013, temperature was reduced to only use averages from 2013 for the most recent data. Spark was used for the ETL pipeline and data stored in parquet for analysis.
 
 ## Data Sources
 ### I94 Immigration Data: 
@@ -15,13 +15,13 @@ This data comes from OpenSoft.
 This is a simple table of airport codes and corresponding cities.
 
 ## Data Model
-Immigration data has key identifiers for the rest of the data and can be supplemented with the other tables(temperature, demographics, and airport codes). City and IATA Code identifiers can be used to join tables.
+Immigration data has key identifiers for the rest of the data and can be supplemented with the other tables(temperature, demographics, and airport codes). City and IATA Code identifiers can be used to join tables. A star schema was selected for its simplicity, it allows users to join fact and dimension tables and allows them to analyze the data per user requirments.
 
 | table | columns | description | type |
 |---|---|---|---|
 | Immigrations | cicid; i94yr; i94mon; i94cit; i94res; i94port; arrdate; i94mode; i94addr; depdate; i94bir; i94visa; count; dtadfile; entdepa; entdepd; matflag; biryear; dtaddto; gender; airline; admnum; fltno; visatype;  | Contains i94 immigration data | Fact Table |
-| Temperature | dt; AverageTemperature; AverageTemperatureUncertainty;  City; Country; Latitude; Longitude;  | Contains temperature data | Dimension Table |
-| Demographics | City; State; Median Age; Male Population; Female Population; Total Population; Number of Veterans; Foreign-born; Average Household Size; State Code; Race; Count;  | Contains airport data | Dimension Table |
+| Temperature | dt; AverageTemperature; AverageTemperatureUncertainty;  City; Country; Latitude; Longitude; i94port; | Contains temperature data | Dimension Table |
+| Demographics | City; State; Median Age; Male Population; Female Population; Total Population; Number of Veterans; Foreign-born; Average Household Size; State Code; Race; Count; i94port; | Contains airport data | Dimension Table |
 | Airport | ident; type; name; elevation_ft; continent; iso_country; iso_region;  municipality; gps_code; iata_code; local_code; coordinates; | Contains demographicsdata | Dimension Table |
 
 ## Data Pipeline
@@ -51,3 +51,6 @@ This depends on the update cycle of the data itself, in the ase of temperature d
     * Integration with Apache Airflow can be performed to allow a scheduled DAG to query the data everyday at 7am.
 - The database needed to be accessed by 100+ people.
     * Data can be migrated to Redshift to allow auto-scaling capabilities to handle the load of increased access by users.
+    
+### Notes:
+Requires updated version of pandas and pyarrow to function.
